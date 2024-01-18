@@ -46,20 +46,20 @@ class QuakeDataFetcher {
                     }
                 }
                 if let error {
-                    logger.info("ERROR: \(error.localizedDescription)")
+                    logger.error("ERROR: \(error.localizedDescription)")
                     return
                 }
                 guard let response else {
-                    logger.info("NO RESPONSE")
+                    logger.error("NO RESPONSE")
                     return
                 }
                 guard let resp = response as? HTTPURLResponse,
                       resp.statusCode == 200 else {
-                    logger.info("BAD RESPONSE")
+                    logger.error("BAD RESPONSE")
                     return
                 }
                 guard let data else {
-                    logger.info("NO DATA")
+                    logger.error("NO DATA")
                     return
                 }
                 
@@ -68,7 +68,6 @@ class QuakeDataFetcher {
                         quake.id != lastQuakeId
                     }
                     guard !newObjs.isEmpty else {
-                        logger.info("NO NEW QUAKES RETURNED")
                         return
                     }
                     if newObjs.count > 0 {
@@ -84,7 +83,7 @@ class QuakeDataFetcher {
                         lastQuakeId = lastQuake.id
                     }
                 } catch {
-                    logger.info("CAN'T DECODE JSON: \(error.localizedDescription)")
+                    logger.error("CAN'T DECODE JSON: \(error.localizedDescription)")
                     return
                 }
             }.resume()
