@@ -13,6 +13,13 @@ struct ContentView: View {
     
     @ObservedObject var model : ContentModel
     
+    var timeFormatter = {
+        var fmt = DateFormatter()
+        fmt.dateFormat = "MM/dd HH:mm"
+        fmt.timeZone = TimeZone.current
+        return fmt
+    }()
+    
     
     var body: some View {
         VStack {
@@ -31,7 +38,7 @@ struct ContentView: View {
                 ForEach(model.quakes, id: \.id) { quake in
                     let color = quake.properties.mag >= 5 ? Color.red : Color.black
                     HStack {
-                        Text(Date(timeIntervalSince1970: Double(quake.properties.time / 1000)).formatted())
+                        Text(timeFormatter.string(from: Date(timeIntervalSince1970: Double(quake.properties.time / 1000))))
                             .foregroundStyle(color)
                             .frame(maxWidth: 200, alignment: .leading)
                         Spacer()
