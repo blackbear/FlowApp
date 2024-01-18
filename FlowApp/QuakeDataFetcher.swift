@@ -13,6 +13,7 @@ class QuakeDataFetcher {
     private var myQueue = DispatchQueue(label: "FetcherQueue")
 
     private var lastQuakeDate: String?
+    private var lastQuakeId = ""
     
     // Number of seconds to wait between last success and next call
     private let timeBetweenRequests = 5.0
@@ -62,11 +63,17 @@ class QuakeDataFetcher {
                 do {
                     let newObjs = try JSONDecoder().decode(QueryResponse.self, from: data)
                     if newObjs.features.count > 0 {
-                        newQuakes = newObjs.features
-                        let lastQuake = newQuakes.max(by: { d1, d2 in
+                        let lastQuake = newObjs.features.max(by: { d1, d2 in
                             return d1.properties.time < d2.properties.time
                         })
-                        lastQuakeDate = Date(timeIntervalSince1970: Double(lastQuake!.properties.time / 1000)).formatted(.iso8601)
+                        guard let lastQuake else {
+                            return
+                        }
+                        lastQuakeDate = Date(timeIntervalSince1970: Double(lastQuake.properties.time / 1000)).formatted(.iso8601)
+                        if lastQuake.id != lastQuakeId {
+                            newQuakes = newObjs.features
+                        }
+                        lastQuakeId = lastQuake.id
                     }
                 } catch {
                     print("CAN'T DECODE JSON: \(error.localizedDescription)")

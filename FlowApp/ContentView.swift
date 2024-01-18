@@ -16,21 +16,33 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            ForEach(model.quakes, id: \.id) { quake in
-                HStack {
-                    Text(Date(timeIntervalSince1970: Double(quake.properties.time / 1000)).formatted())
-                        .frame(maxWidth: 200, alignment: .leading)
-                    Spacer()
-                    Text(quake.placeString)
-                        .foregroundStyle(quake.properties.mag >= 5 ? Color.red : Color.black)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Spacer()
-                    Text(quake.magnitudeString)
-                        .frame(maxWidth: 100, alignment: .leading)
+            HStack {
+                Text("DATE/TIME")
+                    .frame(maxWidth: 200, alignment: .leading)
+                Spacer()
+                Text("LOCATION")
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
+                Text("MAG")
+                    .frame(maxWidth: 100, alignment: .leading)
+            }
+            ScrollView([.vertical], showsIndicators: true) {
+                ForEach(model.quakes, id: \.id) { quake in
+                    HStack {
+                        Text(Date(timeIntervalSince1970: Double(quake.properties.time / 1000)).formatted())
+                            .frame(maxWidth: 200, alignment: .leading)
+                        Spacer()
+                        Text(quake.placeString)
+                            .foregroundStyle(quake.properties.mag >= 5 ? Color.red : Color.black)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Spacer()
+                        Text(quake.magnitudeString)
+                            .frame(maxWidth: 100, alignment: .leading)
+                    }
                 }
             }
-            
             Spacer()
         }.padding(10.0)
             .background() {
