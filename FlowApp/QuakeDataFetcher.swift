@@ -7,8 +7,11 @@
 
 import Foundation
 import Combine
+import Logging
 
 class QuakeDataFetcher {
+    
+    private var logger = Logger(label: "FlowApp")
     
     private var myQueue = DispatchQueue(label: "FetcherQueue")
 
@@ -43,40 +46,45 @@ class QuakeDataFetcher {
                     }
                 }
                 if let error {
-                    print("ERROR: \(error.localizedDescription)")
+                    logger.info("ERROR: \(error.localizedDescription)")
                     return
                 }
                 guard let response else {
-                    print("NO RESPONSE")
+                    logger.info("NO RESPONSE")
                     return
                 }
                 guard let resp = response as? HTTPURLResponse,
                       resp.statusCode == 200 else {
-                    print("BAD RESPONSE")
+                    logger.info("BAD RESPONSE")
                     return
                 }
                 guard let data else {
-                    print("NO DATA")
+                    logger.info("NO DATA")
                     return
                 }
                 
                 do {
-                    let newObjs = try JSONDecoder().decode(QueryResponse.self, from: data)
-                    if newObjs.features.count > 0 {
-                        let lastQuake = newObjs.features.max(by: { d1, d2 in
+                    let newObjs = try JSONDecoder().decode(QueryResponse.self, from: data).features.filter { quake in
+                        quake.id != lastQuakeId
+                    }
+                    guard !newObjs.isEmpty else {
+                        logger.info("NO NEW QUAKES RETURNED")
+                        return
+                    }
+                    if newObjs.count > 0 {
+                        logger.info("RETRIEVED \(newObjs.count) NEW QUAKES")
+                        let lastQuake = newObjs.max(by: { d1, d2 in
                             return d1.properties.time < d2.properties.time
                         })
                         guard let lastQuake else {
                             return
                         }
                         lastQuakeDate = Date(timeIntervalSince1970: Double(lastQuake.properties.time / 1000)).formatted(.iso8601)
-                        if lastQuake.id != lastQuakeId {
-                            newQuakes = newObjs.features
-                        }
+                        newQuakes = newObjs
                         lastQuakeId = lastQuake.id
                     }
                 } catch {
-                    print("CAN'T DECODE JSON: \(error.localizedDescription)")
+                    logger.info("CAN'T DECODE JSON: \(error.localizedDescription)")
                     return
                 }
             }.resume()
