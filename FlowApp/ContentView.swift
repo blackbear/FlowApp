@@ -35,8 +35,8 @@ struct ContentView: View {
                     .frame(maxWidth: 100, alignment: .leading)
             }
             ScrollView([.vertical], showsIndicators: true) {
-                ForEach(model.quakes, id: \.id) { quake in
-                    let color = quake.properties.mag >= 5 ? Color.red : Color.black
+                ForEach(Array(model.quakes.enumerated()), id: \.element.id) { index, quake in
+                    let color = quake.properties.mag >= 5 ? Color.red : Color("NormalText")
                     HStack {
                         Text(timeFormatter.string(from: Date(timeIntervalSince1970: Double(quake.properties.time / 1000))))
                             .foregroundStyle(color)
@@ -50,13 +50,16 @@ struct ContentView: View {
                         Text(quake.magnitudeString)
                             .foregroundStyle(color)
                             .frame(maxWidth: 100, alignment: .leading)
+                    }.background {
+                        index % 2 == 0 ? Color("RowHighlight") : Color("RowNormal")
                     }
+
                 }
             }
             Spacer()
         }.padding(10.0)
             .background() {
-                Color.white
+                Color("ScreenBackground")
             }
 
             
