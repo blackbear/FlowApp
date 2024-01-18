@@ -29,16 +29,19 @@ struct ContentView: View {
             }
             ScrollView([.vertical], showsIndicators: true) {
                 ForEach(model.quakes, id: \.id) { quake in
+                    let color = quake.properties.mag >= 5 ? Color.red : Color.black
                     HStack {
                         Text(Date(timeIntervalSince1970: Double(quake.properties.time / 1000)).formatted())
+                            .foregroundStyle(color)
                             .frame(maxWidth: 200, alignment: .leading)
                         Spacer()
                         Text(quake.placeString)
-                            .foregroundStyle(quake.properties.mag >= 5 ? Color.red : Color.black)
+                            .foregroundStyle(color)
                             .lineLimit(1)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         Spacer()
                         Text(quake.magnitudeString)
+                            .foregroundStyle(color)
                             .frame(maxWidth: 100, alignment: .leading)
                     }
                 }
