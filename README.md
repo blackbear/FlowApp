@@ -14,3 +14,4 @@ data updates, and various basic SwiftUI things like HStacks, Lists, etc as well 
 - Alerts using local pushes if there is an earthquake nearby
 - Toggle time display between local and UTC
 - Creating a mock data source and using it to write unit tests for some of the functions like the JSON decoding and data computations.
+- There appears to be an edge case where earthquakes can be added that are earlier than the latest ones you saw, and by limiting the return value to ones later than the last request, you could miss them. Not sure how to fix this without refetching older ones to try and catch up.
