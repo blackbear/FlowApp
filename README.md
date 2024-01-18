@@ -2,7 +2,7 @@
 This is a quick and dirty sample App I created for my code interview Wednesday night, because I don't have any non-proprietary code I can share... It's not pretty by any means, it's intended to show that I know how to deal with JSON data tasks, dispatch queues, using Combine for subscribing to
 data updates, and various basic SwiftUI things like HStacks, Lists, etc as well as responsiveness to screen footprint.
 
-## Improvements (oh so many...)
+## Potential Improvements (oh so many...)
 - Real error handling and logging instead of prints
 - Make the UI actually look nice
 - Handle long place names more elegantly than just truncating them
